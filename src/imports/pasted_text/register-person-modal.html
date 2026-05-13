@@ -1,0 +1,104 @@
+<div class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="header-info">
+                <span class="icon-box">👤+</span>
+                <div>
+                    <h2>Registrar Nueva Persona</h2>
+                    <p>Seleccione el tipo de persona para continuar con el registro</p>
+                </div>
+            </div>
+            <button class="btn-close" (click)="cerrar()">×</button>
+        </div>
+
+        <div class="modal-body">
+            <label class="section-title">TIPO DE PERSONA *</label>
+            <div class="tipo-grid">
+
+                @for (tipo of tiposPersona; track tipo.PK_TIPO_PERSONA) {
+                <div class="tipo-card" [class.active]="tipoSeleccionado() === tipo.CODIGO"
+                    (click)="tipoSeleccionado.set(tipo.CODIGO)">
+                    <span class="icon">👤</span>
+                    <strong>{{ tipo.DESCRIPCION }}</strong>
+                </div>
+                }
+            </div>
+
+            <hr class="separator" />
+
+            @if (tipoSeleccionado()) {
+            <div class="stepper-indicator">
+                <span [class.active]="pasoActual() === 1">1. Datos personales</span>
+                <span class="arrow">›</span>
+                <span [class.active]="pasoActual() === 2">2. Pilar y área asignada</span>
+            </div>
+
+            <form [formGroup]="personaForm" class="form-container">
+                @if (pasoActual() === 1) {
+                <div class="row">
+                    <div class="col">
+                        <label>Tipo de Documento *</label>
+                        <select formControlName="TIPO_DOCUMENTO">
+                            <option value="">Seleccione tipo</option>
+                            <option value="CC">Cédula de Ciudadanía</option>
+                            <option value="TI">Tarjeta de Identidad</option>
+                            <option value="CE">Cédula de Extranjería</option>
+                            <option value="PP">Pasaporte</option>
+                            <option value="RC">Registro Civil</option>
+                            <option value="NIT">NIT</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <label>Número de Identificación *</label>
+                        <input type="text" formControlName="NUMEROIDENTIFICACION" placeholder="Ej: 1061234001">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label>Primer Nombre *</label>
+                        <input type="text" formControlName="PRIMER_NOMBRE" placeholder="Ej: Rosa">
+                    </div>
+                    <div class="col">
+                        <label>Segundo Nombre (opcional)</label>
+                        <input type="text" formControlName="SEGUNDO_NOMBRE" placeholder="Ej: Elena">
+                    </div>
+                </div>
+                } @else {
+                <div class="row">
+                    <div class="col">
+                        <label>Pilar *</label>
+                        <select formControlName="pilar">
+                            <option value="">Seleccione pilar</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <label>Área *</label>
+                        <select formControlName="area">
+                            <option value="">Seleccione área</option>
+                        </select>
+                    </div>
+                </div>
+                }
+            </form>
+            } @else {
+            <div class="empty-state">
+                <p>Seleccione el tipo de persona para continuar</p>
+                <small>Elija una opción en la sección superior</small>
+            </div>
+            }
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn-cancel" (click)="cerrar()">Cancelar</button>
+            <div class="actions-right">
+                @if (tipoSeleccionado() && pasoActual() === 1) {
+                <button class="btn-next" (click)="siguientePaso()">Siguiente →</button>
+                }
+                @if (pasoActual() === 2) {
+                <button class="btn-prev" (click)="pasoActual.set(1)">Anterior</button>
+                <button class="btn-save" (click)="guardar()">Registrar Persona</button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
